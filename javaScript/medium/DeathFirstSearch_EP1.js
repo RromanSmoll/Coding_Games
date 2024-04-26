@@ -1,0 +1,120 @@
+let example = [
+  [0, 1, 0],
+  [1, 0, 1],
+  [0, 1, 0],
+];
+
+/* //Defining a node:
+class Node {
+    construtor (positionX, positionY,isCorrupt,isGateway){
+        this.positionX=positionX;
+        this.positionY=positionY;
+        this.isCorrupt=isCorrupt;
+        this.isGataway=isGateway;
+        this.children=[];
+    }
+
+    addChild(x,y,corruption,gateaway){
+        this.children.push(new Node(x,y,corruption,gateaway));
+        return this;
+    }
+
+} */
+
+var inputs = readline().split(" ");
+const N = parseInt(inputs[0]); // the total number of nodes in the level, including the gateways
+const L = parseInt(inputs[1]); // the number of links / edges
+const E = parseInt(inputs[2]); // the number of exit gateways
+console.error(
+  `ENTRY:\r\nTotal nodes: ${N}\r\nLinks: ${L}\r\nExit gateaways: ${E}`
+);
+
+//creation of adjecency list //see Example upstairs as a reference
+let adjList = Array.apply(null, Array(N)).map(function () {
+  return Array.apply(null, Array(N)).map(function () {
+    return 0;
+  });
+});
+
+//fill the 1-s and 0-s
+for (let i = 0; i < L; i++) {
+  var inputs = readline().split(" ");
+  const N1 = parseInt(inputs[0]); // N1 and N2 defines a link between these nodes
+  const N2 = parseInt(inputs[1]);
+  console.error(`Link ${i}: ${N1} - ${N2}`);
+  adjList[N1][N2] = 1;
+  adjList[N2][N1] = 1;
+}
+console.error(adjList);
+var gateways = [];
+for (let i = 0; i < E; i++) {
+  const EI = parseInt(readline()); // the index of a gateway node
+  console.error(`Gataway index ${i}: ${EI}`);
+  gateways.push(EI);
+}
+
+/**
+ * BFS
+ * will be applied for every exit gateway
+ */
+function bfs(graph, currentAgent) {
+  var nodesLen = {};
+
+  for (let i = 0; i < graph.length; i++) {
+    nodesLen[i] = Infinity;
+  }
+  nodesLen[currentAgent] = 0;
+
+  var queue = [currentAgent];
+  var current;
+
+  while (queue.length != 0) {
+    current = queue.shift();
+    var currConnected = graph[current];
+    var neighbourIdx = [];
+    var idx = currConnected.indexOf(1);
+
+    //find all nodes connected to the current node
+    while (idx != -1) {
+      neighbourIdx.push(idx);
+      idx = currConnected.indexOf(1, idx + 1); //and the next node after that (+1)
+    }
+    //loop throguth the found nodes
+    for (let j = 0; j < neighbourIdx.length; j++) {
+      if (nodesLen[neighbourIdx[j]] == Infinity) {
+        nodesLen[neighbourIdx[j]] = nodesLen[current] + 1;
+        queue.push(neighbourIdx[j]);
+      }
+    }
+  }
+  return nodesLen;
+}
+
+var randomNodeCounter = 0;
+// game loop
+while (true) {
+  const SI = parseInt(readline()); // The index of the node on which the Bobnet agent is positioned this turn
+  console.error(`Bobnet is positioned at ${SI}`);
+  //calculate distances for every node, Then select only gatays;
+  const distances = [];
+  for (const [key, value] of Object.entries(bfs(adjList, SI))) {
+    distances.push({ key: key, value: value });
+  }
+  distances.sort((a, b) => a.value - b.value);
+  console.error(`bfs: ${JSON.stringify(distances)}`);
+
+  //very close ssumption. If bobnet is positioned at 1 node close to any gateaway -> shut it down
+  var nodeClose = false;
+  for (const n of distances) {
+    if (gateways.find((g) => n.key == g) !== undefined) {
+      if (adjList[SI][n.key] === 1) {
+        console.log(`${SI} ${n.key}`);
+        nodeClose = true;
+      }
+    }
+  }
+  if (!nodeClose) {
+    var currentAgentConnections = adjList[SI];
+    console.log(`${SI} ${currentAgentConnections.indexOf(1)}`);
+  }
+}
