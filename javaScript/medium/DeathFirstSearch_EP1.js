@@ -4,23 +4,6 @@ let example = [
   [0, 1, 0],
 ];
 
-/* //Defining a node:
-class Node {
-    construtor (positionX, positionY,isCorrupt,isGateway){
-        this.positionX=positionX;
-        this.positionY=positionY;
-        this.isCorrupt=isCorrupt;
-        this.isGataway=isGateway;
-        this.children=[];
-    }
-
-    addChild(x,y,corruption,gateaway){
-        this.children.push(new Node(x,y,corruption,gateaway));
-        return this;
-    }
-
-} */
-
 var inputs = readline().split(" ");
 const N = parseInt(inputs[0]); // the total number of nodes in the level, including the gateways
 const L = parseInt(inputs[1]); // the number of links / edges
@@ -90,7 +73,6 @@ function bfs(graph, currentAgent) {
   return nodesLen;
 }
 
-var randomNodeCounter = 0;
 // game loop
 while (true) {
   const SI = parseInt(readline()); // The index of the node on which the Bobnet agent is positioned this turn
@@ -116,5 +98,70 @@ while (true) {
   if (!nodeClose) {
     var currentAgentConnections = adjList[SI];
     console.log(`${SI} ${currentAgentConnections.indexOf(1)}`);
+  }
+}
+
+/**
+ *
+ *
+ * Solution 2.
+ * Simplified the 1st, removed BFS traversing allTogether except for the adjList
+ *
+ * The core now sinmply checks that agent is positined in 1 vertice near the gatay or not.
+ * If not, it will block a random node next to agent -> can't hurt
+ * If only 1 vertice is the distance - block it.
+ *
+ *
+ *
+ */
+
+var inputsAlt = readline().split(" ");
+const NAlt = parseInt(inputs[0]); // the total number of nodes in the level, including the gateways
+const LAlt = parseInt(inputs[1]); // the number of links / edges
+const EAlt = parseInt(inputs[2]); // the number of exit gateways
+console.error(
+  `ENTRY:\r\nTotal nodes: ${NAlt}\r\nLinks: ${LAlt}\r\nExit gateaways: ${EAlt}`
+);
+
+//creation of adjecency list
+let adjListAlt = Array.apply(null, Array(NAlt)).map(function () {
+  return Array.apply(null, Array(NAlt)).map(function () {
+    return 0;
+  });
+});
+
+//fill the 1-s and 0-s
+for (let i = 0; i < L; i++) {
+  var inputsAlt = readline().split(" ");
+  const N1Alt = parseInt(inputsAlt[0]); // N1 and N2 defines a link between these nodes
+  const N2Alt = parseInt(inputsAlt[1]);
+  console.error(`Link ${i}: ${N1Alt} - ${N2Alt}`);
+  adjListAlt[N1Alt][N2Alt] = 1;
+  adjListAlt[N2Alt][N1Alt] = 1;
+}
+console.error(adjListAlt);
+var gatewaysAlt = [];
+for (let i = 0; i < E; i++) {
+  const EIAlt = parseInt(readline()); // the index of a gateway node
+  console.error(`Gataway index ${i}: ${EIAlt}`);
+  gateways.push(EIAlt);
+}
+
+// game loop
+while (true) {
+  const SIAlt = parseInt(readline()); // The index of the node on which the Bobnet agent is positioned this turn
+  console.error(`Bobnet is positioned at ${SIAlt}`);
+
+  //very close ssumption. If bobnet is positioned at 1 node close to any gateaway -> shut it down
+  var nodeCloseAlt = false;
+  for (const g of gatewaysAlt) {
+    if (adjListAlt[SIAlt][g] === 1) {
+      console.log(`${SI} ${g}`);
+      nodeCloseAlt = true;
+    }
+  }
+  if (!nodeCloseAlt) {
+    var currentAgentConnectionsAlt = adjListAlt[SIAlt];
+    console.log(`${SIAlt} ${currentAgentConnectionsAlt.indexOf(1)}`);
   }
 }
