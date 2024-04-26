@@ -165,3 +165,109 @@ while (true) {
     console.log(`${SIAlt} ${currentAgentConnectionsAlt.indexOf(1)}`);
   }
 }
+
+/**
+ *
+ *
+ * Solutuion 3
+ * This on actully does use BFS in full
+ *
+ *
+ */
+
+/**
+ * const inputs = readline().split(' ');
+const N = parseInt(inputs[0]); // the total number of nodes in the level, including the gateways
+const L = parseInt(inputs[1]); // the number of links
+const E = parseInt(inputs[2]); // the number of exit gateways
+
+var id = 0;
+class Node {
+    constructor() {
+        this.id = id++;
+        this.links = [];
+        this.isExitNode = false;
+    }
+    
+    hasLink(nodeID) {
+        return this.links.indexOf(nodeID) > -1;
+    }
+    
+    hasExitLink() {
+        return this.links.find(nodeID => nodes[nodeID].isExitNode);
+    }
+
+    addLink(nodeID) {
+        if (this.links.indexOf(nodeID) === -1) {
+            this.links.push(nodeID);
+        }
+    }
+
+    removeLink(nodeID) {
+        var index = this.links.indexOf(nodeID);
+        if (index > -1) {
+            this.links.splice(index, 1);
+        }
+    }
+}
+
+function unlink(nodeA, nodeB){
+    nodeA.removeLink(nodeB.id);
+    nodeB.removeLink(nodeA.id);
+    
+    return [nodeA.id, nodeB.id].sort((a, b) => a - b).join(" ");
+}
+
+// Create all the nodes.
+var nodes = [];
+for (var i = 0; i < N; i++) {
+    nodes.push(new Node());
+}
+
+// Add the links.
+for (let i = 0; i < L; i++) {
+    let inputs = readline().split(' ');
+    let N1 = parseInt(inputs[0]); // N1 and N2 defines a link between these nodes
+    let N2 = parseInt(inputs[1]);
+
+    nodes[N1].addLink(N2);
+    nodes[N2].addLink(N1);
+}
+
+// Add the exits.
+for (let i = 0; i < E; i++) {
+    let EI = parseInt(readline()); // the index of a gateway node
+    nodes[EI].isExitNode = true;
+    printErr("Exit: " + EI);
+}
+
+// TODO: create BFS algorithm.
+function severeLink(skyNetNode){
+    var nodeA, nodeB;
+    
+    printErr("SkyNet exit link ID: " + skyNetNode.hasExitLink());
+    
+    if (skyNetNode.hasExitLink() !== undefined) {
+        nodeA = skyNetNode;
+        nodeB = nodes[skyNetNode.hasExitLink()];
+    } else {
+        nodeA = skyNetNode;
+        nodeB = nodes[skyNetNode.links[0]];
+    }
+    
+    return unlink(nodeA, nodeB);
+}
+
+// Game loop.
+while (true) {
+    // The index of the node on which the Skynet agent is positioned this turn.
+    let SI = parseInt(readline());
+    printErr("SkyNet: " + SI);
+    print(severeLink(nodes[SI]));
+}
+
+
+
+
+
+ */
