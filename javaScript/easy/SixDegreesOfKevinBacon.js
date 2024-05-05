@@ -121,3 +121,68 @@ if (target === "Kevin Bacon") {
     console.log(pathDistance);
   });
 }
+
+/**
+ *
+ * Best solution after submission:
+const target = "Kevin Bacon";
+const actorName = readline();
+const n = parseInt(readline());
+const nodes = {};
+for (let i = 0; i < n; i++) {
+    let [movie, actors] = readline().split(": ");
+    actors = actors.split(", ");
+    for (const a of actors) {
+        if (!(a in nodes)) {
+            nodes[a] = [];
+        }
+        nodes[a].push(...actors.filter(n => n !== a));
+    }
+}
+
+function degrees(list, visited = {}, n=0) {
+    const nextList = [];
+    for (x of list) {
+        if (x === target) return n;
+        visited[x] = true;
+        for (y of nodes[x]) {    
+            if (!visited[y]) {
+                visited[y] = true;
+                nextList.push(y);
+            }
+        }
+    }
+    return degrees(nextList, visited, n + 1);
+}
+
+console.log(degrees([actorName]));
+ *
+ */
+
+/**
+ * 
+ * Alternative revision
+const actors = {unknown : []};
+const actorName = readline();
+const n = parseInt(readline());
+for (let i = 0; i < n; i++) {
+    let [movieName, movieCast] = readline().split(': ');
+    for(let actor of movieCast.split(', ')) {
+        if(!actors[actor]) actors[actor] = [];
+        actors[actor].push(...movieCast.split(', ').filter(a => a !== actor));
+    }
+}
+
+var count = Infinity;
+lookForKevin()
+console.log(actorName === 'Kevin Bacon' ? 0 : count + 1)
+
+function lookForKevin(actor = actorName, separation = 0, seen = []) {
+    if(separation > count) return;
+    if(actors[actor].includes('Kevin Bacon')) count = Math.min(separation, count);
+    actors[actor].forEach(a => {
+        if(!seen.includes(a)) lookForKevin(a, separation + 1, seen.concat(a))
+    })
+}
+ * 
+ */
