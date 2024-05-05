@@ -13,11 +13,11 @@ Sleepers: Kevin Bacon, Jason Patric, Brad Pitt, Robert De Niro, Dustin Hoffman
 //Nodes
 var id = 0;
 class Node {
-  constructor(name) {
+  constructor(name, kevin) {
     this.id = id++;
     this.name = name;
     this.links = [];
-    this.isKevin = false;
+    this.isKevin = kevin;
   }
   addLink(nodeName, nodeIndex) {
     //nodeId
@@ -60,7 +60,7 @@ for (let i = 0; i < n; i++) {
 
 //create all unique nodes
 nodes = [...new Set(names)].map((name) => {
-  return new Node(name);
+  return new Node(name, name === " Kevin Bacon" ? true : false);
 });
 //Populate the unique nodes
 for (const cast of casts) {
